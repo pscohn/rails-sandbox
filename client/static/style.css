@@ -1,0 +1,44 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+fa:hover {
+  cursor: pointer;
+}
+
+.list {
+  width: 320px;
+  height: 600px;
+  display: block;
+  margin-right: 1em;
+  margin-top: 1em;
+  float: left;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+
+a:hover {
+  cursor: pointer;
+}
+
+.todo {
+  width: 100%;
+}
+
+.todo span {
+  width: 80%;
+}
+
+.create-list-btn {
+  display: block;
+}
+
+.state {
+  display: block;
+  position: fixed;
+  top: 0;
+  right: 0;
+}
