@@ -4,13 +4,14 @@
   "description": "simple chat app",
   "dependencies": {
     "express": "^4.14.0",
-    "socket.io": "^1.4.8",
     "lodash": "^4.13.1",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
+    "react-router": "^2.7.0",
     "redux": "^3.5.2",
-    "redux-thunk": "^2.1.0"
+    "redux-thunk": "^2.1.0",
+    "socket.io": "^1.4.8"
   },
   "devDependencies": {
     "babel": "^6.5.2",

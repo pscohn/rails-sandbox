@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 
-// import {
-// } from './chatActions';
-
 class ChatContainer extends Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       isNickSet: false,
       nick: '',
       message: '',
-      messages: []
+      messages: [],
+      nicks: [],
     };
-    this.socket = io();
+    this.socket = io(`/${this.props.params.room}`);
     this.socket.on('chat message', (msg) => {
       let messages = this.state.messages.slice();
       messages.push(msg);
@@ -21,6 +23,11 @@ class ChatContainer extends Component {
         message: '',
         messages,
       })
+    });
+    this.socket.on('nicks', (nicks) => {
+      this.setState({
+        nicks,
+      });
     });
   }
 
@@ -41,8 +48,10 @@ class ChatContainer extends Component {
 
   onSubmitNick(e) {
     e.preventDefault();
-    if (this.state.nick.length > 0) {
+    console.log(this.state.nicks, this.state.nick);
+    if (this.state.nick.length > 0 && this.state.nicks.indexOf(this.state.nick) === -1) {
       this.setState({ isNickSet: true });
+      this.socket.emit('nick set', this.state.nick);
     }
   }
 
@@ -58,11 +67,12 @@ class ChatContainer extends Component {
 
     return (
       <div>
-        <ul>
+        <ul className="messages">
           {this.state.messages.map((message, i) => {
             return <li key={i}>{message.nick}: {message.text}</li>;
           })}
         </ul>
+        People in room: {this.state.nicks}
         <form onSubmit={::this.onSubmit}>
           <input onChange={::this.onChangeMessage} value={this.state.message} />
           <button>Send</button>
