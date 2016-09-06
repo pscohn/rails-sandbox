@@ -14,6 +14,7 @@ class ChatContainer extends Component {
       message: '',
       messages: [],
       nicks: [],
+      nickError: null,
     };
     this.socket = io(`/${this.props.params.room}`);
     this.socket.on('chat message', (msg) => {
@@ -52,10 +53,18 @@ class ChatContainer extends Component {
   onSubmitNick(e) {
     e.preventDefault();
     console.log(this.state.nicks, this.state.nick);
-    if (this.state.nick.length > 0 && this.state.nicks.indexOf(this.state.nick) === -1) {
-      this.setState({ isNickSet: true });
-      this.socket.emit('nick set', this.state.nick);
+    if (this.state.nick.length > 0) {
+      this.setState({ nickError: 'You must set a username' });
+      return;
     }
+
+    if (this.state.nicks.indexOf(this.state.nick) > -1) {
+      this.setState({ nickError: 'There is already someone in the room with that name' });
+      return;
+    }
+
+    this.setState({ isNickSet: true, nickError: null });
+    this.socket.emit('nick set', this.state.nick);
   }
 
   render() {
@@ -66,6 +75,7 @@ class ChatContainer extends Component {
           onChangeNick={::this.onChangeNick}
           nick={this.state.nick}
           nicks={this.state.nicks.join(', ')}
+          error={this.state.nickError}
           room={this.props.params.room}
         />
       );

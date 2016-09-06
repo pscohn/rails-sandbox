@@ -7,6 +7,7 @@ class NickForm extends Component {
     nicks: PropTypes.string.isRequired,
     onChangeNick: PropTypes.func.isRequired,
     onSubmitNick: PropTypes.func.isRequired,
+    error: PropTypes.string.isRequired,
   };
 
   render() {
@@ -17,6 +18,7 @@ class NickForm extends Component {
           <input onChange={this.props.onChangeNick} value={this.props.nick} />
           <button>Set Nick</button>
         </form>
+        {this.props.error ? this.props.error : undefined}
         People in room: {this.props.nicks}
       </div>
     );
