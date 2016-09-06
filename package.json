@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "simple chat app",
   "scripts": {
-    "postinstall": "webpack"
+    "postinstall": "./node_modules/.bin/webpack"
   },
   "dependencies": {
     "express": "^4.14.0",
