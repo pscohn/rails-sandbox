@@ -20,7 +20,6 @@ class ChatContainer extends Component {
       let messages = this.state.messages.slice();
       messages.push(msg);
       this.setState({
-        message: '',
         messages,
       })
     });
@@ -38,6 +37,7 @@ class ChatContainer extends Component {
     e.preventDefault();
     const message = { nick: this.state.nick, text: this.state.message };
     this.socket.emit('chat message', message);
+    this.setState({ message: '' });
     return false;
   }
 
