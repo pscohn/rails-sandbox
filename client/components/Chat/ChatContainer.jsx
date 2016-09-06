@@ -53,7 +53,7 @@ class ChatContainer extends Component {
   onSubmitNick(e) {
     e.preventDefault();
     console.log(this.state.nicks, this.state.nick);
-    if (this.state.nick.length > 0) {
+    if (this.state.nick.length === 0) {
       this.setState({ nickError: 'You must set a username' });
       return;
     }

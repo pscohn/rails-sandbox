@@ -18,7 +18,7 @@ class NickForm extends Component {
           <input onChange={this.props.onChangeNick} value={this.props.nick} />
           <button>Set Nick</button>
         </form>
-        {this.props.error ? this.props.error : undefined}
+        {this.props.error ? this.props.error : undefined}<br />
         People in room: {this.props.nicks}
       </div>
     );
