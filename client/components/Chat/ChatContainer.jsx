@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import NickForm from './NickForm';
 
 class ChatContainer extends Component {
   static propTypes = {
@@ -29,6 +29,9 @@ class ChatContainer extends Component {
         nicks,
       });
     });
+    window.onbeforeunload = () => {
+      this.socket.emit('user left', this.state.nick);
+    };
   }
 
   onSubmit(e) {
@@ -58,21 +61,24 @@ class ChatContainer extends Component {
   render() {
     if (this.state.isNickSet === false) {
       return (
-        <form onSubmit={::this.onSubmitNick}>
-          <input onChange={::this.onChangeNick} value={this.state.nick} />
-          <button>Set Nick</button>
-        </form>
+        <NickForm
+          onSubmitNick={::this.onSubmitNick}
+          onChangeNick={::this.onChangeNick}
+          nick={this.state.nick}
+          nicks={this.state.nicks.join(', ')}
+          room={this.props.params.room}
+        />
       );
     }
 
     return (
-      <div>
+      <div className="chat">
+        People in room: {this.state.nicks.join(', ')}
         <ul className="messages">
           {this.state.messages.map((message, i) => {
             return <li key={i}>{message.nick}: {message.text}</li>;
           })}
         </ul>
-        People in room: {this.state.nicks}
         <form onSubmit={::this.onSubmit}>
           <input onChange={::this.onChangeMessage} value={this.state.message} />
           <button>Send</button>
@@ -82,21 +88,4 @@ class ChatContainer extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  const {  } = state;
-  return {
-  };
-}
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // onCreateList: () => {
-    //   dispatch(onCreateList());
-    // },
-    // onDeleteList: (listId) => {
-    //   dispatch(onDeleteList(listId));
-    // },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatContainer);
+export default ChatContainer;

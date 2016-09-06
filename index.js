@@ -15,6 +15,14 @@ var addNickToRoom = function(nick, room) {
   nicks[room].push(nick);
 }
 
+var removeNickFromRoom = function(nick, room) {
+  var index = nicks[room].indexOf(nick);
+  if (index === -1) {
+    return;
+  }
+  nicks[room].splice(index, 1);
+}
+
 var setupRoom = function(room) {
   if (rooms[room] === true || room === '__webpack_hmr') {
     return;
@@ -31,6 +39,10 @@ var setupRoom = function(room) {
     });
     socket.on('nick set', function(nick) {
       addNickToRoom(nick, room);
+      nsp.emit('nicks', nicks[room]);
+    });
+    socket.on('user left', function(nick) {
+      removeNickFromRoom(nick, room);
       nsp.emit('nicks', nicks[room]);
     });
   });

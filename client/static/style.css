@@ -1,44 +1,8 @@
-body {
-  font-family: 'Roboto', sans-serif;
-}
-
-fa:hover {
-  cursor: pointer;
-}
-
-.list {
-  width: 320px;
-  height: 600px;
-  display: block;
-  margin-right: 1em;
-  margin-top: 1em;
-  float: left;
-}
-
-a {
-  color: blue;
-  text-decoration: underline;
-}
-
-a:hover {
-  cursor: pointer;
-}
-
-.todo {
-  width: 100%;
-}
-
-.todo span {
-  width: 80%;
-}
-
-.create-list-btn {
-  display: block;
-}
-
-.state {
-  display: block;
-  position: fixed;
-  top: 0;
-  right: 0;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font: 13px Helvetica, Arial; }
+.chat form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+.chat form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+.chat form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+.messages { list-style-type: none; margin: 0; padding: 0; }
+.messages li { padding: 5px 10px; }
+.messages li:nth-child(odd) { background: #eee; }
