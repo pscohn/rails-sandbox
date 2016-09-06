@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
-import { store } from './services/configureStore';
+//import { Provider } from 'react-redux';
+//import { store } from './services/configureStore';
 import { Route, Router, browserHistory } from 'react-router';
 
 import App from './containers/App';
@@ -15,8 +15,8 @@ const routes = (
 );
 
 ReactDOM.render(
-  <Provider store={store}>
-    <Router history={browserHistory} routes={routes} />
-  </Provider>,
+//  <Provider store={store}>
+    <Router history={browserHistory} routes={routes} />,
+//  </Provider>,
   document.getElementById('app')
 );
