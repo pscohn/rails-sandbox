@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import NickForm from './NickForm';
+import { flashTitle, cancelFlashTitle } from '../../services/flashTitle';
 
 class ChatContainer extends Component {
   static propTypes = {
@@ -9,29 +10,62 @@ class ChatContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isSoundEnabled: true,
       isNickSet: false,
       nick: '',
       message: '',
-      messages: [],
+      messages: [{nick: null, text: 'This chat is not saved and will be lost upon refresh'}],
       nicks: [],
+      colors: {},
       nickError: null,
     };
     this.socket = io(`/${this.props.params.room}`);
     this.socket.on('chat message', (msg) => {
+      if (msg.nick !== this.state.nick) {
+        flashTitle(`new message`, 10)
+      }
       let messages = this.state.messages.slice();
       messages.push(msg);
       this.setState({
         messages,
       })
     });
-    this.socket.on('nicks', (nicks) => {
+    this.socket.on('nicks', (nicks, colors) => {
       this.setState({
         nicks,
+        colors,
       });
+    });
+    this.socket.on('nick joined', (nick, color) => {
+      this.putMessage(`${nick} has joined the room`);
+      this.setState({
+        colors: {...this.state.colors, ...{[nick]: color}},
+      })
+    });
+    this.socket.on('nick left', (nick) => {
+      this.putMessage(`${nick} has left the room`);
+    });
+    this.socket.on('disconnect', () => {
+      this.putMessage('you have been disconnected. you can try refreshing but the chat will be lost')
     });
     window.onbeforeunload = () => {
       this.socket.emit('user left', this.state.nick);
     };
+    window.onfocus = () => {
+      cancelFlashTitle();
+    }
+  }
+
+  putMessage(message) {
+    let messages = this.state.messages.slice();
+    messages.push({ nick: null, text: message });
+    this.setState({
+      messages,
+    })
+  }
+
+  toggleSound() {
+    this.setState({ isSoundEnabled: !this.state.isSoundEnabled });
   }
 
   onSubmit(e) {
@@ -52,7 +86,6 @@ class ChatContainer extends Component {
 
   onSubmitNick(e) {
     e.preventDefault();
-    console.log(this.state.nicks, this.state.nick);
     if (this.state.nick.length === 0) {
       this.setState({ nickError: 'You must set a username' });
       return;
@@ -83,10 +116,17 @@ class ChatContainer extends Component {
 
     return (
       <div className="chat">
-        People in room: {this.state.nicks.join(', ')}
+        <p>People in room: {this.state.nicks.join(', ')}</p>
+        <input type="checkbox" onChange={::this.toggleSound} checked={this.state.isSoundEnabled} /> Enable sound
         <ul className="messages">
           {this.state.messages.map((message, i) => {
-            return <li key={i}>{message.nick}: {message.text}</li>;
+            return <li key={i}>{message.nick ?
+                <span>
+                  <span style={{ color: '#' + this.state.colors[message.nick] }}>
+                    {message.nick}:
+                  </span> {message.text}</span> :
+                <span><em>{message.text}</em></span>}
+              </li>;
           })}
         </ul>
         <form onSubmit={::this.onSubmit}>

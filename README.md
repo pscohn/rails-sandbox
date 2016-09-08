@@ -9,5 +9,4 @@
 ### Todo
 
 - add sound
-- color by username
-- tab notification/flash
+- make it presentable

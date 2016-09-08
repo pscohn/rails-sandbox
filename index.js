@@ -2,12 +2,17 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var data = "do shash'owania";
+var crypto = require('crypto');
+
 app.use(express.static('client/static'));
 
 var rooms = {};
 var nicks = {};
+var colors = {}
 
-var addNickToRoom = function(nick, room) {
+var addNickToRoom = function(nick, room, color) {
+  colors[nick] = color;
   if (!nicks[room]) {
     nicks[room] = [nick];
     return;
@@ -29,8 +34,7 @@ var setupRoom = function(room) {
   }
   var nsp = io.of('/' + room);
   nsp.on('connection', function(socket) {
-    console.log('a user connected to ' + room);
-    nsp.emit('nicks', nicks[room] || []);
+    nsp.emit('nicks', nicks[room] || [], colors);
     socket.on('disconnect', function() {
       console.log('user disconnected from ' + room);
     });
@@ -38,12 +42,15 @@ var setupRoom = function(room) {
       nsp.emit('chat message', msg);
     });
     socket.on('nick set', function(nick) {
-      addNickToRoom(nick, room);
-      nsp.emit('nicks', nicks[room]);
+      var color = crypto.createHash('md5').update(nick).digest("hex").slice(0, 6);
+      addNickToRoom(nick, room, color);
+      nsp.emit('nicks', nicks[room], colors);
+      nsp.emit('nick joined', nick, color);
     });
     socket.on('user left', function(nick) {
       removeNickFromRoom(nick, room);
-      nsp.emit('nicks', nicks[room]);
+      nsp.emit('nicks', nicks[room], colors);
+      nsp.emit('nick left', nick);
     });
   });
   rooms[room] = true;
