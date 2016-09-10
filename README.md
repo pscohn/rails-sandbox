@@ -8,5 +8,4 @@
 
 ### Todo
 
-- add sound
 - make it presentable

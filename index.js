@@ -2,7 +2,6 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var data = "do shash'owania";
 var crypto = require('crypto');
 
 app.use(express.static('client/static'));

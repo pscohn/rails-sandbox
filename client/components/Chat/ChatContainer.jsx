@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import NickForm from './NickForm';
 import { flashTitle, cancelFlashTitle } from '../../services/flashTitle';
+import { SOUND_ENABLED, SOUND_FILE } from '../../config';
 
 class ChatContainer extends Component {
   static propTypes = {
@@ -19,9 +20,15 @@ class ChatContainer extends Component {
       colors: {},
       nickError: null,
     };
+
+    if (SOUND_ENABLED) {
+      this.pop = new Audio(SOUND_FILE);
+    }
+
     this.socket = io(`/${this.props.params.room}`);
     this.socket.on('chat message', (msg) => {
       if (msg.nick !== this.state.nick) {
+        this.playSound();
         flashTitle(`new message`, 10)
       }
       let messages = this.state.messages.slice();
@@ -53,6 +60,12 @@ class ChatContainer extends Component {
     };
     window.onfocus = () => {
       cancelFlashTitle();
+    }
+  }
+
+  playSound() {
+    if (SOUND_ENABLED && this.state.isSoundEnabled) {
+      this.pop.play();
     }
   }
 
@@ -117,7 +130,12 @@ class ChatContainer extends Component {
     return (
       <div className="chat">
         <p>People in room: {this.state.nicks.join(', ')}</p>
-        <input type="checkbox" onChange={::this.toggleSound} checked={this.state.isSoundEnabled} /> Enable sound
+        {SOUND_ENABLED ?
+          <form><input
+            type="checkbox"
+            onChange={::this.toggleSound}
+            checked={this.state.isSoundEnabled} /> Enable sound</form>
+          : undefined}
         <ul className="messages">
           {this.state.messages.map((message, i) => {
             return <li key={i}>{message.nick ?
@@ -129,7 +147,7 @@ class ChatContainer extends Component {
               </li>;
           })}
         </ul>
-        <form onSubmit={::this.onSubmit}>
+        <form className="chatbar" onSubmit={::this.onSubmit}>
           <input onChange={::this.onChangeMessage} value={this.state.message} />
           <button>Send</button>
         </form>
