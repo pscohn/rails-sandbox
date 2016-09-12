@@ -1,7 +1,119 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font: 13px Helvetica, Arial; }
-.chatbar { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-.chatbar input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-.chatbar button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-.messages { list-style-type: none; margin: 0; padding: 0; }
-.messages li { padding: 5px 10px; }
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0 auto;
+  /*max-width: 50em;*/
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  color: #555;
+  /*text-align: center;*/
+  line-height: 2em;
+  background-color: #eee;
+}
+
+h1,
+h2,
+strong {
+  color: #333;
+}
+
+div {
+  height: 100%;
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  background-color: white;
+  border: 1px solid #eee
+}
+
+button:focus {
+  outline: none;
+}
+
+.container {
+  background-color: white;
+  border: 1px solid #d5d5d5;
+  display: flex;
+}
+
+.chat {
+  flex-grow: 4;
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  /*height: 90%;*/
+  padding: 1em;
+  overflow-y: scroll;
+  flex: 10;
+}
+
+.chatbar {
+  flex: 1;
+  display: flex;
+  /*position: absolute;
+  bottom: 0;
+  height: 10%;*/
+}
+
+.chatbar form {
+  flex: 1;
+  display: flex;
+}
+
+.chatbar form input {
+  flex: 8;
+  font-size: 1em;
+  padding: .5em;
+}
+
+.chatbar form input:focus {
+  outline: 0;
+}
+
+.chatbar form button {
+  flex: 1;
+}
+
+.sidebar {
+  background-color: #eee;
+  border: 1px solid #ddd;
+  margin: 0 auto;
+  /*padding: 1em;*/
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+.sidebar h2 {
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.2em;
+}
+
+/*.nick-form input {
+  width: 50%;
+  font-size: 1em;
+  padding: .5em;
+}
+
+
+.nick-form button:hover {
+  cursor: pointer;
+  outline: none;
+}
+*/
+.nick-error {
+  height: 3em;
+  line-height: 3em;
+  color: #ff7575;
+}

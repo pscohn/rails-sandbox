@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { Route, Router, browserHistory } from 'react-router';
 
 import App from './containers/App';
-import ChatContainer from './components/Chat/ChatContainer';
+import ChatContainer from './components/ChatContainer';
 import Home from './components/Home';
 
 const routes = (

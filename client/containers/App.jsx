@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ChatContainer from '../components/Chat/ChatContainer';
+import ChatContainer from '../components/ChatContainer';
 import Home from '../components/Home';
 
 export default class App extends Component {

@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import NickForm from './NickForm';
-import { flashTitle, cancelFlashTitle } from '../../services/flashTitle';
-import { SOUND_ENABLED, SOUND_FILE } from '../../config';
+import NickList from './NickList';
+import { flashTitle, cancelFlashTitle } from '../services/flashTitle';
+import { SOUND_ENABLED, SOUND_FILE } from '../config';
 
 class ChatContainer extends Component {
   static propTypes = {
@@ -83,6 +84,9 @@ class ChatContainer extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+    if (this.state.message === '') {
+      return false;
+    }
     const message = { nick: this.state.nick, text: this.state.message };
     this.socket.emit('chat message', message);
     this.setState({ message: '' });
@@ -114,43 +118,55 @@ class ChatContainer extends Component {
   }
 
   render() {
+    let main;
     if (this.state.isNickSet === false) {
-      return (
+      main = (
         <NickForm
           onSubmitNick={::this.onSubmitNick}
           onChangeNick={::this.onChangeNick}
           nick={this.state.nick}
-          nicks={this.state.nicks.join(', ')}
           error={this.state.nickError}
           room={this.props.params.room}
         />
       );
+    } else {
+      main = (
+        <div className="chat">
+          <div className="messages">
+            <ul>
+              {this.state.messages.map((message, i) => {
+                return <li key={i}>{message.nick ?
+                    <span>
+                      <span style={{ color: '#' + this.state.colors[message.nick] }}>
+                        {message.nick}:
+                      </span> {message.text}</span> :
+                    <span><em>{message.text}</em></span>}
+                  </li>;
+              })}
+            </ul>
+          </div>
+          <div className="chatbar">
+            <form onSubmit={::this.onSubmit}>
+              <input onChange={::this.onChangeMessage} value={this.state.message} />
+              <button>Send</button>
+            </form>
+          </div>
+        </div>
+      );
     }
 
     return (
-      <div className="chat">
-        <p>People in room: {this.state.nicks.join(', ')}</p>
-        {SOUND_ENABLED ?
-          <form><input
-            type="checkbox"
-            onChange={::this.toggleSound}
-            checked={this.state.isSoundEnabled} /> Enable sound</form>
-          : undefined}
-        <ul className="messages">
-          {this.state.messages.map((message, i) => {
-            return <li key={i}>{message.nick ?
-                <span>
-                  <span style={{ color: '#' + this.state.colors[message.nick] }}>
-                    {message.nick}:
-                  </span> {message.text}</span> :
-                <span><em>{message.text}</em></span>}
-              </li>;
-          })}
-        </ul>
-        <form className="chatbar" onSubmit={::this.onSubmit}>
-          <input onChange={::this.onChangeMessage} value={this.state.message} />
-          <button>Send</button>
-        </form>
+      <div className="container">
+        {main}
+        <div className="sidebar">
+          {SOUND_ENABLED ?
+            <form><input
+              type="checkbox"
+              onChange={::this.toggleSound}
+              checked={this.state.isSoundEnabled} /> Enable sound</form>
+            : undefined}
+          <NickList nicks={this.state.nicks} />
+        </div>
       </div>
     );
   }
