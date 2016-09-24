@@ -60,7 +60,7 @@ app.get('/:room', function(req, res) {
   res.sendFile(__dirname + '/client/static/index.html');
 });
 
-var PORT = process.env.PORT || 3000;
+var PORT = process.env.PORT || 4000;
 http.listen(PORT, function() {
-  console.log('listening on *:3000');
+  console.log('listening on *:4000');
 });
