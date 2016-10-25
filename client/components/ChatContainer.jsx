@@ -26,8 +26,9 @@ class ChatContainer extends Component {
       this.pop = new Audio(SOUND_FILE);
     }
 
-    this.socket = io(`/${this.props.params.room}`);
-    this.socket.on('chat message', (msg) => {
+//    this.socket = io(`/${this.props.params.room}`);
+    this.socket = new WebSocketRails('localhost:3000/websocket');
+    this.socket.bind('chat message', (msg) => {
       if (msg.nick !== this.state.nick) {
         this.playSound();
         flashTitle(`new message`, 10)
@@ -38,26 +39,26 @@ class ChatContainer extends Component {
         messages,
       })
     });
-    this.socket.on('nicks', (nicks, colors) => {
+    this.socket.bind('nicks', (nicks, colors) => {
       this.setState({
         nicks,
         colors,
       });
     });
-    this.socket.on('nick joined', (nick, color) => {
+    this.socket.bind('nick joined', (nick, color) => {
       this.putMessage(`${nick} has joined the room`);
       this.setState({
         colors: {...this.state.colors, ...{[nick]: color}},
       })
     });
-    this.socket.on('nick left', (nick) => {
+    this.socket.bind('nick left', (nick) => {
       this.putMessage(`${nick} has left the room`);
     });
-    this.socket.on('disconnect', () => {
-      this.putMessage('you have been disconnected. you can try refreshing but the chat will be lost')
+    this.socket.bind('disconnect', () => {
+      this.putMessag('you have been disconnected. you can try refreshing but the chat will be lost')
     });
     window.onbeforeunload = () => {
-      this.socket.emit('user left', this.state.nick);
+      this.socket.trigger('user left', this.state.nick);
     };
     window.onfocus = () => {
       cancelFlashTitle();
@@ -88,7 +89,7 @@ class ChatContainer extends Component {
       return false;
     }
     const message = { nick: this.state.nick, text: this.state.message };
-    this.socket.emit('chat message', message);
+    this.socket.trigger('chat message', message);
     this.setState({ message: '' });
     return false;
   }
@@ -114,7 +115,7 @@ class ChatContainer extends Component {
     }
 
     this.setState({ isNickSet: true, nickError: null });
-    this.socket.emit('nick set', this.state.nick);
+    this.socket.trigger('nick set', this.state.nick);
   }
 
   render() {

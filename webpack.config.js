@@ -2,7 +2,7 @@ module.exports = {
   entry: './client/index.js',
   output: {
     path: __dirname,
-    filename: './client/static/bundle.js'
+    filename: './app/assets/javascripts/bundle.js'
   },
   module: {
     loaders: [{
